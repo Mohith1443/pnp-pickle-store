@@ -1,12 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+// Look for your CartItem type definition and update it:
 export type CartItem = {
   id: string;
   name: string;
   price: number;
-  quantity: number;
   weight_grams: number;
+  quantity: number;
+  github_image_path: string; // <--- ADD THIS LINE
+  stock_quantity: number;
 };
 
 interface CartState {
