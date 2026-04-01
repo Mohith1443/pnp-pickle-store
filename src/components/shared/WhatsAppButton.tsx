@@ -12,7 +12,7 @@ export default function WhatsAppButton() {
   }, []);
 
   // REPLACE THIS with your actual business WhatsApp number (include country code, no + or spaces)
-  const phoneNumber = "919876543210"; 
+  const phoneNumber = "+91 97042 03413"; 
   const defaultMessage = "Hello PNP Foods! I have a question about your homemade pickles.";
 
   const waLink = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMessage)}`;
