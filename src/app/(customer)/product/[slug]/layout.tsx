@@ -1,15 +1,21 @@
 import { Metadata } from 'next';
 import { supabase } from '../../../../lib/supabase';
 
-// This runs entirely on the server to generate the beautiful preview cards
+// CRITICAL FIX: Tell Next.js to fetch SEO data LIVE, do not cache from build time
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const { data: product } = await supabase
+  const { data: product, error } = await supabase
     .from('products')
     .select('name, price, github_image_path, offer_percentage')
     .eq('slug', params.slug)
     .single();
 
-  if (!product) return { title: 'Recipe Not Found' };
+  // If there's an error or it's temporarily missing, fall back to a safe brand title
+  if (error || !product) {
+    return { title: 'Authentic Andhra Pickles | PNP Foods' };
+  }
 
   const discountedPrice = Math.round(product.price - (product.price * (product.offer_percentage / 100)));
 
@@ -22,7 +28,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       url: `https://pnppickles.netlify.app/product/${params.slug}`,
       images: [
         {
-          url: product.github_image_path, // Uses the actual pickle image!
+          url: product.github_image_path,
           width: 800,
           height: 800,
           alt: product.name,
@@ -37,6 +43,5 @@ export default function ProductLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // We just pass your existing page right through!
   return <>{children}</>;
 }
